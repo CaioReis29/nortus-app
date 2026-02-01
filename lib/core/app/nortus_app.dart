@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nortus/core/theme/app_theme.dart';
 import 'package:nortus/presentation/screens/home/home_page.dart';
 
 class NortusApp extends StatelessWidget {
@@ -9,9 +10,7 @@ class NortusApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Nortus App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: AppTheme.lightTheme,
       home: const HomePage(),
     );
   }
