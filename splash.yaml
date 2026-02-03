@@ -1,0 +1,14 @@
+flutter_native_splash:
+  color: "#0D478C" ## 0xFF0D478C
+  color_dark: "#0D478C"
+  image: "lib/assets/logo/nortus_white_name.png"
+  image_dark: "lib/assets/logo/nortus_white_name.png"
+  android: true
+  ios: true
+
+  android_12:
+    color: "#0D478C"
+    color_dark: "#0D478C"
+    image: "lib/assets/logo/nortus_white_name.png"
+    image_dark: "lib/assets/logo/nortus_white_name.png"
+  web: false

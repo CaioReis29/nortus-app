@@ -7,7 +7,7 @@ class ContainerDi {
   final getIt = GetIt.instance;
   
   void setup() {
-    getIt.registerFactory<AuthCubit>(() => AuthCubit());
+    getIt.registerLazySingleton<AuthCubit>(() => AuthCubit());
     getIt.registerLazySingleton<RouterNotifier>(() => RouterNotifier(getIt<AuthCubit>()));
   }
   
