@@ -1,5 +1,5 @@
 import 'app_exception.dart';
 
-class AuthException extends AppException {
+class AuthException extends Failure {
   const AuthException(super.message, {super.code});
 }

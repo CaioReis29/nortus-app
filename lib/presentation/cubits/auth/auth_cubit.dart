@@ -35,8 +35,8 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
     emit(const AuthLoading());
-    final Result<AuthResult, AppException> result =
-        await loginUseCase(login: login, password: password);
+    final Result<AuthResult, Failure> result =
+      await loginUseCase(login: login, password: password, keepConnected: keepConnected);
     result.open(
       (auth) {
         final ok = auth?.isAuthenticated ?? false;

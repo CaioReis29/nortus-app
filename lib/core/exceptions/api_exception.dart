@@ -1,5 +1,5 @@
 import 'app_exception.dart';
 
-class ApiException extends AppException {
-  const ApiException(super.message, {super.code});
+class ApiFailure extends Failure {
+  const ApiFailure(super.message, {super.code});
 }

@@ -16,12 +16,12 @@ class HttpClient {
     try {
       final res = await dio.get(path, queryParameters: queryParameters, options: options);
       if (_ok(res.statusCode)) return Result.success(res);
-      return Result.error(ApiException('Request failed', code: res.statusCode));
+      return Result.error(ApiFailure('Request failed', code: res.statusCode));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout) {
         return Result.error(const NetworkException('Network error'));
       }
-      return Result.error(ApiException(e.message ?? 'API error', code: e.response?.statusCode));
+      return Result.error(ApiFailure(e.message ?? 'API error', code: e.response?.statusCode));
     } catch (e) {
       return Result.error(UnexpectedException(e.toString()));
     }
@@ -35,12 +35,12 @@ class HttpClient {
     try {
       final res = await dio.post(path, data: data, options: options);
       if (_ok(res.statusCode)) return Result.success(res);
-      return Result.error(ApiException('Request failed', code: res.statusCode));
+      return Result.error(ApiFailure('Request failed', code: res.statusCode));
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout) {
         return Result.error(const NetworkException('Network error'));
       }
-      return Result.error(ApiException(e.message ?? 'API error', code: e.response?.statusCode));
+      return Result.error(ApiFailure(e.message ?? 'API error', code: e.response?.statusCode));
     } catch (e) {
       return Result.error(UnexpectedException(e.toString()));
     }

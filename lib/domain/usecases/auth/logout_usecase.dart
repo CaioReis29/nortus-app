@@ -6,7 +6,7 @@ class LogoutUseCase {
   final AuthRepository repository;
   const LogoutUseCase(this.repository);
 
-  Future<Result<void, AppException>> call() {
+  Future<Result<void, Failure>> call() {
     return repository.logout();
   }
 }

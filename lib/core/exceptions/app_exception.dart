@@ -1,8 +1,8 @@
-abstract class AppException implements Exception {
+abstract class Failure implements Exception {
   final String message;
   final int? code;
-  const AppException(this.message, {this.code});
+  const Failure(this.message, {this.code});
 
   @override
-  String toString() => 'AppException(message: $message, code: $code)';
+  String toString() => 'Failure(message: $message, code: $code)';
 }

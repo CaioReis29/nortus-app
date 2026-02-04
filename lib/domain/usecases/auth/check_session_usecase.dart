@@ -6,7 +6,7 @@ class CheckSessionUseCase {
   final AuthRepository repository;
   const CheckSessionUseCase(this.repository);
 
-  Future<Result<bool, AppException>> call() {
+  Future<Result<bool, Failure>> call() {
     return repository.isLoggedIn();
   }
 }

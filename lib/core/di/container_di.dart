@@ -11,6 +11,7 @@ import 'package:nortus/presentation/cubits/auth/auth_cubit.dart';
 import 'package:nortus/domain/usecases/auth/login_usecase.dart';
 import 'package:nortus/domain/usecases/auth/logout_usecase.dart';
 import 'package:nortus/domain/usecases/auth/check_session_usecase.dart';
+import 'package:nortus/core/network/connectivity_service.dart';
 
 class ContainerDi {
   final getIt = GetIt.instance;
@@ -32,10 +33,12 @@ class ContainerDi {
     getIt.registerLazySingleton<AuthLocalDatasource>(
       () => AuthLocalDatasource(),
     );
+    getIt.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
     getIt.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(
         remote: getIt<AuthRemoteDatasource>(),
         local: getIt<AuthLocalDatasource>(),
+        connectivity: getIt<ConnectivityService>(),
       ),
     );
 

@@ -1,5 +1,5 @@
 import 'app_exception.dart';
 
-class NetworkException extends AppException {
+class NetworkException extends Failure {
   const NetworkException(super.message, {super.code});
 }
