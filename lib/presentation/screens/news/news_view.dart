@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nortus/core/router/app_router.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nortus/core/router/app_paths.dart';
 import 'package:nortus/presentation/cubits/news/news_cubit.dart';
 import 'package:nortus/presentation/screens/news/widgets/news_item_card.dart';
 import 'package:nortus/core/theme/app_colors.dart';
@@ -202,6 +204,9 @@ class _NewsViewState extends State<NewsView> {
                         return NewsItemCard(
                           item: n,
                           isFavorite: state.favorites.contains(n.id),
+                          onTap: () {
+                            context.push(RoutePaths.newsDetails, extra: n);
+                          },
                           onToggleFavorite: () async {
                             final added = await _cubit.toggleFavorite(n.id);
                             final msg = added
