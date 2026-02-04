@@ -1,4 +1,4 @@
-import 'package:nortus/domain/entities/auth_result.dart';
+import 'package:nortus/domain/models/auth_result.dart';
 import 'package:flutter_result/flutter_result.dart';
 import 'package:nortus/core/exceptions/app_exception.dart';
 

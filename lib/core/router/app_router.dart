@@ -4,7 +4,7 @@ import 'package:nortus/core/router/app_notifier.dart';
 import 'package:nortus/core/router/app_paths.dart';
 import 'package:nortus/presentation/cubits/auth/auth_cubit.dart';
 import 'package:nortus/presentation/screens/auth/auth_page.dart';
-import 'package:nortus/presentation/screens/home/news_page.dart';
+import 'package:nortus/presentation/screens/news/news_page.dart';
 import 'package:nortus/presentation/screens/profile/profile_page.dart';
 import 'package:nortus/presentation/screens/splash/splash_page.dart';
 

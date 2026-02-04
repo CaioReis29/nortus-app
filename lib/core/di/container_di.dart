@@ -12,6 +12,17 @@ import 'package:nortus/domain/usecases/auth/login_usecase.dart';
 import 'package:nortus/domain/usecases/auth/logout_usecase.dart';
 import 'package:nortus/domain/usecases/auth/check_session_usecase.dart';
 import 'package:nortus/core/network/connectivity_service.dart';
+import 'package:nortus/core/storage/favorites_service.dart';
+import 'package:nortus/domain/repositories/favorites_repository.dart';
+import 'package:nortus/data/repositories/favorites_repository_impl.dart';
+import 'package:nortus/domain/usecases/favorites/get_favorites_usecase.dart';
+import 'package:nortus/domain/usecases/favorites/toggle_favorite_news_usecase.dart';
+import 'package:nortus/domain/usecases/favorites/watch_favorites_usecase.dart';
+import 'package:nortus/data/datasources/news_remote_datasource.dart';
+import 'package:nortus/domain/repositories/news_repository.dart';
+import 'package:nortus/data/repositories/news_repository_impl.dart';
+import 'package:nortus/domain/usecases/news/get_news_page_usecase.dart';
+import 'package:nortus/presentation/cubits/news/news_cubit.dart';
 
 class ContainerDi {
   final getIt = GetIt.instance;
@@ -42,12 +53,10 @@ class ContainerDi {
       ),
     );
 
-    // Use cases
     getIt.registerLazySingleton(() => LoginUseCase(getIt<AuthRepository>()));
     getIt.registerLazySingleton(() => LogoutUseCase(getIt<AuthRepository>()));
     getIt.registerLazySingleton(() => CheckSessionUseCase(getIt<AuthRepository>()));
 
-    // Cubit
     getIt.registerLazySingleton<AuthCubit>(
       () => AuthCubit(
         loginUseCase: getIt<LoginUseCase>(),
@@ -59,5 +68,19 @@ class ContainerDi {
     getIt.registerLazySingleton<RouterNotifier>(
       () => RouterNotifier(getIt<AuthCubit>()),
     );
+
+    getIt.registerLazySingleton<NewsRemoteDatasource>(
+      () => NewsRemoteDatasource(getIt<HttpClient>()),
+    );
+    getIt.registerLazySingleton<NewsRepository>(
+      () => NewsRepositoryImpl(getIt<NewsRemoteDatasource>()),
+    );
+    getIt.registerLazySingleton(() => GetNewsPageUseCase(getIt<NewsRepository>()));
+    getIt.registerLazySingleton<NewsCubit>(() => NewsCubit(getIt<GetNewsPageUseCase>()));
+    getIt.registerLazySingleton<FavoritesService>(() => FavoritesService());
+    getIt.registerLazySingleton<FavoritesRepository>(() => FavoritesRepositoryImpl(getIt<FavoritesService>()));
+    getIt.registerLazySingleton(() => GetFavoritesUseCase(getIt<FavoritesRepository>()));
+    getIt.registerLazySingleton(() => ToggleFavoriteNewsUseCase(getIt<FavoritesRepository>()));
+    getIt.registerLazySingleton(() => WatchFavoritesUseCase(getIt<FavoritesRepository>()));
   }
 }

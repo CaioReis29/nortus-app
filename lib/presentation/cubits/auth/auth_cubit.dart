@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_result/flutter_result.dart';
 import 'package:nortus/core/exceptions/app_exception.dart';
-import 'package:nortus/domain/entities/auth_result.dart';
+import 'package:nortus/domain/models/auth_result.dart';
 import 'package:nortus/domain/usecases/auth/login_usecase.dart';
 import 'package:nortus/domain/usecases/auth/logout_usecase.dart';
 import 'package:nortus/domain/usecases/auth/check_session_usecase.dart';
