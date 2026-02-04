@@ -7,7 +7,11 @@ class LoginUseCase {
   final AuthRepository repository;
   const LoginUseCase(this.repository);
 
-  Future<Result<AuthResult, AppException>> call({required String login, required String password}) {
-    return repository.login(login: login, password: password);
+  Future<Result<AuthResult, AppException>> call({
+    required String login,
+    required String password,
+    bool keepConnected = false,
+  }) {
+    return repository.login(login: login, password: password, keepConnected: keepConnected);
   }
 }

@@ -20,7 +20,20 @@ class AuthCubit extends Cubit<AuthState> {
     required this.checkSessionUseCase,
   }) : super(const AuthInitial());
 
-  Future<void> login(String login, String password) async {
+  void _emitError(String message) {
+    emit(const AuthInitial());
+    emit(AuthError(message));
+  }
+
+  Future<void> login(String login, String password, {bool keepConnected = false}) async {
+    if (!_isValidEmail(login)) {
+      _emitError('E-mail inválido');
+      return;
+    }
+    if (!_isValidPassword(password)) {
+      _emitError('Senha deve ter pelo menos 6 caracteres');
+      return;
+    }
     emit(const AuthLoading());
     final Result<AuthResult, AppException> result =
         await loginUseCase(login: login, password: password);
@@ -30,9 +43,26 @@ class AuthCubit extends Cubit<AuthState> {
         emit(ok ? const AuthAuthenticated() : const AuthError('Invalid credentials'));
       },
       (err) {
-        emit(AuthError(err?.message ?? 'Authentication failed'));
+        _emitError(err?.message ?? 'Authentication failed');
       },
     );
+  }
+
+  Future<void> signUp(String email, String password, String confirm) async {
+    if (!_isValidEmail(email)) {
+      _emitError('E-mail inválido');
+      return;
+    }
+    if (!_isValidPassword(password)) {
+      _emitError('Senha deve ter pelo menos 6 caracteres');
+      return;
+    }
+    if (confirm != password) {
+      _emitError('Senhas não coincidem');
+      return;
+    }
+    emit(const AuthLoading());
+    _emitError('Cadastro não implementado ainda');
   }
 
   Future<void> logout() async {
@@ -49,5 +79,15 @@ class AuthCubit extends Cubit<AuthState> {
       (logged) => emit((logged ?? false) ? const AuthAuthenticated() : const AuthUnauthenticated()),
       (err) => emit(const AuthInitial()),
     );
+  }
+
+  bool _isValidEmail(String email) {
+    final hasAt = email.contains('@');
+    final hasDot = email.contains('.');
+    return hasAt && hasDot && email.isNotEmpty;
+  }
+
+  bool _isValidPassword(String password) {
+    return password.length >= 6;
   }
 }

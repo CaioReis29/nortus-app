@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:nortus/core/consntants/api_urls.dart';
 import 'package:nortus/core/router/app_notifier.dart';
 import 'package:nortus/core/network/http_client.dart';
 import 'package:nortus/data/datasources/auth_local_datasource.dart';
@@ -18,7 +19,7 @@ class ContainerDi {
     getIt.registerLazySingleton<Dio>(
       () => Dio(
         BaseOptions(
-          baseUrl: 'https://flutter-challenge.wiremockapi.cloud',
+          baseUrl: ApiUrls.baseUrl,
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
         ),

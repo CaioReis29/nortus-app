@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class AuthBottomCard extends StatelessWidget {
   final double height;
   final Color color;
+  final Widget? child;
 
   const AuthBottomCard({
     super.key,
     required this.height,
     required this.color,
+    this.child,
   });
 
   @override
@@ -25,6 +27,12 @@ class AuthBottomCard extends StatelessWidget {
             topRight: Radius.circular(20),
           ),
         ),
+        child: child == null
+            ? null
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: child,
+              ),
       ),
     );
   }

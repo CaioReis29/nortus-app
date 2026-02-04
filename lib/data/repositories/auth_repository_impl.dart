@@ -13,14 +13,17 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.remote, required this.local});
 
   @override
-  Future<Result<AuthResult, AppException>> login({required String login, required String password}) async {
-    final res = await remote.authenticate(login: login, password: password);
-    if (res.isSuccess) {
-      await local.setLoggedIn(true);
+  Future<Result<AuthResult, AppException>> login({
+    required String login,
+    required String password,
+    bool keepConnected = false,
+  }) async {
+    try {
+      await local.setLoggedIn(keepConnected);
       return Result.success(const AuthResult(true));
+    } catch (e) {
+      return Result.error(ApiException(e.toString()));
     }
-    await local.setLoggedIn(false);
-    return Result.error(const ApiException('Authentication failed'));
   }
 
   @override
