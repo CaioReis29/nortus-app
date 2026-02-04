@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:nortus/core/extensions/date_extensions.dart';
+import 'package:nortus/presentation/components/favorite_icon_button.dart';
+import 'package:nortus/presentation/components/news_hero_image.dart';
 import 'package:nortus/domain/models/news/news_item.dart';
 
 class NewsItemCard extends StatefulWidget {
@@ -48,29 +50,22 @@ class _NewsItemCardState extends State<NewsItemCard> {
           children: [
             Stack(
               children: [
-                _TopImage(src: item.image.src),
+                const SizedBox(height: 8),
+                NewsHeroImage(src: item.image.src, borderRadius: 16, height: 180),
                 Positioned(
                   top: 8,
                   right: 8,
                   child: Material(
                     color: Colors.black54,
                     shape: const CircleBorder(),
-                    child: IconButton(
-                      tooltip: _fav ? 'Remover dos favoritos' : 'Adicionar aos favoritos',
+                    child: FavoriteIconButton(
+                      isFavorite: _fav,
+                      iconColor: Colors.white,
                       onPressed: () {
                         if (!_init) return;
                         widget.onToggleFavorite?.call();
                         setState(() => _fav = !_fav);
                       },
-                      icon: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
-                        child: Icon(
-                          _fav ? Icons.star : Icons.star_border,
-                          key: ValueKey<bool>(_fav),
-                          color: Colors.white,
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -87,7 +82,7 @@ class _NewsItemCardState extends State<NewsItemCard> {
                   Text(item.title, style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 4),
                   Text(
-                    item.summary.isNotEmpty ? item.summary : item.publishedAt.toString(),
+                    item.summary.isNotEmpty ? item.summary : item.publishedAt.formatBr(),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -100,38 +95,4 @@ class _NewsItemCardState extends State<NewsItemCard> {
   }
 }
 
-class _TopImage extends StatelessWidget {
-  final String src;
-  const _TopImage({required this.src});
-
-  @override
-  Widget build(BuildContext context) {
-    if (src.isEmpty) {
-      return ClipRRect(
-          
-        child: Container(
-          color: Colors.grey.shade200,
-          height: 180,
-          alignment: Alignment.center,
-          child: const Icon(Icons.image, size: 48, color: Colors.grey),
-        ),
-      );
-    }
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: CachedNetworkImage(
-          imageUrl: src,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) => Container(
-            color: Colors.grey.shade200,
-            alignment: Alignment.center,
-            child: const Icon(Icons.broken_image, size: 48, color: Colors.grey),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// TopImage substituído por NewsHeroImage componente reutilizável
