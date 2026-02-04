@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nortus/core/router/app_router.dart';
 import 'package:nortus/presentation/cubits/news/news_cubit.dart';
 import 'package:nortus/presentation/screens/news/widgets/news_item_card.dart';
+import 'package:nortus/core/theme/app_colors.dart';
 
 class NewsView extends StatefulWidget {
   const NewsView({super.key});
@@ -13,6 +14,7 @@ class NewsView extends StatefulWidget {
 
 class _NewsViewState extends State<NewsView> {
   final NewsCubit _cubit = getIt<NewsCubit>();
+  bool _onlyFavorites = false;
 
   @override
   void initState() {
@@ -41,76 +43,83 @@ class _NewsViewState extends State<NewsView> {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Pedro Silva",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold, 
-                  fontSize: 22,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               ),
-              Text(
+              const Text(
                 "pedro@gmail.com",
-                style: TextStyle(
-                  fontWeight: FontWeight.w400, 
-                  fontSize: 18,
-                ),
+                style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
-                spacing: 4,
-                children: [
+                children: const [
                   Icon(Icons.location_on, size: 16, color: Colors.grey),
+                  SizedBox(width: 4),
                   Text(
                     "São Paulo, Brasil",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400, 
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Colors.grey),
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               SizedBox(
                 height: 44,
                 child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.black),
-                  ),
-                  onPressed: () {}, 
+                  style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.black)),
+                  onPressed: () {},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 4,
-                    children: [
+                    children: const [
                       Icon(Icons.settings_outlined, size: 16, color: Colors.black),
-                      Text(
-                          "Configurações de Usuário", 
-                          style: TextStyle(color: Colors.black,
-                        ),
-                      ),
+                      SizedBox(width: 4),
+                      Text("Configurações de Usuário", style: TextStyle(color: Colors.black)),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               SizedBox(
                 height: 44,
                 child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.red),
-                  ),
-                  onPressed: () {}, 
+                  style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.red)),
+                  onPressed: () {},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 4,
-                    children: [
+                    children: const [
                       Icon(Icons.logout, size: 16, color: Colors.red),
+                      SizedBox(width: 4),
                       Text("Sair da Conta", style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () => setState(() => _onlyFavorites = !_onlyFavorites),
+                child: IntrinsicWidth(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Mostrar favoritos',
+                        style: TextStyle(
+                          color: _onlyFavorites ? AppColors.buttonColor : Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      if (_onlyFavorites)
+                        const SizedBox(
+                          height: 2,
+                          child: ColoredBox(color: AppColors.buttonColor),
+                        ),
                     ],
                   ),
                 ),
@@ -122,6 +131,9 @@ class _NewsViewState extends State<NewsView> {
               bloc: _cubit,
               builder: (context, state) {
                 final items = state.items;
+                final visibleItems = _onlyFavorites
+                    ? items.where((e) => state.favorites.contains(e.id)).toList()
+                    : items;
 
                 if (state.isLoading && items.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
@@ -147,7 +159,7 @@ class _NewsViewState extends State<NewsView> {
                     ),
                   );
                 }
-                if (items.isEmpty) {
+                if (visibleItems.isEmpty) {
                   return const Center(
                     child: Text('Nenhuma notícia encontrada'),
                   );
@@ -165,17 +177,15 @@ class _NewsViewState extends State<NewsView> {
                     },
                     child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount:
-                          items.length +
-                          (state.isLoading ? 1 : 0) +
-                          (!state.isLoading && !state.hasMore ? 1 : 0),
+                      itemCount: visibleItems.length +
+                          ((!_onlyFavorites && state.isLoading) ? 1 : 0) +
+                          ((!_onlyFavorites && !state.isLoading && !state.hasMore) ? 1 : 0),
                       itemBuilder: (context, index) {
-                        final isLoadingFooter =
-                            state.isLoading && index == items.length;
-                        final isEndFooter =
-                            !state.isLoading &&
-                            !state.hasMore &&
-                            index == items.length;
+                        final isLoadingFooter = !_onlyFavorites &&
+                            state.isLoading && index == visibleItems.length;
+                        final isEndFooter = !_onlyFavorites &&
+                            !state.isLoading && !state.hasMore &&
+                            index == visibleItems.length;
                         if (isLoadingFooter) {
                           return const Padding(
                             padding: EdgeInsets.symmetric(vertical: 16),
@@ -188,7 +198,7 @@ class _NewsViewState extends State<NewsView> {
                             child: Center(child: Text('Você chegou ao fim')),
                           );
                         }
-                        final n = items[index];
+                        final n = visibleItems[index];
                         return NewsItemCard(
                           item: n,
                           isFavorite: state.favorites.contains(n.id),
